@@ -20,8 +20,15 @@ export function formatDate(valor: string | number | null): string {
     // já está em dd/mm/aaaa — devolve como veio
     return s;
   } else {
-    // ISO (yyyy-mm-dd) ou outro formato reconhecido pelo Date
-    d = new Date(s);
+    const iso = s.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (iso) {
+      // Data ISO pura (sem hora): montar como hora LOCAL para não voltar um dia
+      // por causa do fuso (new Date("2026-08-01") seria UTC = 31/07 no Brasil).
+      const [, ano, mes, dia] = iso;
+      d = new Date(Number(ano), Number(mes) - 1, Number(dia));
+    } else {
+      d = new Date(s);
+    }
   }
 
   if (isNaN(d.getTime())) return s; // não é data válida: mostra o valor original

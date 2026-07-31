@@ -9,7 +9,8 @@ import { useToast } from "@/components/ui/toast";
 import { PageHeader } from "@/components/page-header";
 import { ProjetoPicker } from "@/components/projeto-picker";
 import { Button } from "@/components/ui/button";
-import { Input, Select, Field } from "@/components/ui/input";
+import { Input, Field } from "@/components/ui/input";
+import { SelectMenu } from "@/components/ui/select-menu";
 import { Dialog, AlertDialog } from "@/components/ui/dialog";
 import { Sheet } from "@/components/ui/sheet";
 import { SkeletonTable } from "@/components/ui/skeleton";
@@ -266,18 +267,15 @@ export default function PlanilhaPage() {
                 </div>
                 <div className="hidden items-center gap-2 sm:flex">
                   <Filter className="h-4 w-4 text-content-mute" />
-                  <Select
+                  <SelectMenu
                     value={filtroCol}
-                    onChange={(e) => setFiltroCol(e.target.value)}
+                    onChange={setFiltroCol}
                     className="w-40"
-                  >
-                    <option value="__all">Todas as colunas</option>
-                    {colunas.map((c) => (
-                      <option key={c.id} value={c.id}>
-                        {c.nome}
-                      </option>
-                    ))}
-                  </Select>
+                    options={[
+                      { value: "__all", label: "Todas as colunas" },
+                      ...colunas.map((c) => ({ value: c.id, label: c.nome })),
+                    ]}
+                  />
                 </div>
               </div>
 
@@ -527,11 +525,15 @@ function ColunaDialog({
           />
         </Field>
         <Field label="Tipo de dado">
-          <Select value={tipo} onChange={(e) => setTipo(e.target.value as ColunaTipo)}>
-            <option value="texto">Texto</option>
-            <option value="numero">Número</option>
-            <option value="data">Data</option>
-          </Select>
+          <SelectMenu
+            value={tipo}
+            onChange={(v) => setTipo(v as ColunaTipo)}
+            options={[
+              { value: "texto", label: "Texto" },
+              { value: "numero", label: "Número" },
+              { value: "data", label: "Data" },
+            ]}
+          />
         </Field>
       </div>
       <div className="mt-6 flex justify-end gap-2">

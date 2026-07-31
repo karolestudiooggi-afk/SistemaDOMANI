@@ -4,7 +4,8 @@ import { useRef, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useToast } from "@/components/ui/toast";
 import { Button } from "@/components/ui/button";
-import { Input, Field, Select, Label } from "@/components/ui/input";
+import { Input, Field, Label } from "@/components/ui/input";
+import { SelectMenu } from "@/components/ui/select-menu";
 import { Dialog } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/misc";
 import { lerArquivoPlanilha, type AbaImportada } from "@/lib/importar";
@@ -145,14 +146,14 @@ export function ImportarDialog({
           {/* destino */}
           <div className="space-y-3 border-t border-line pt-4">
             <Label>Importar para</Label>
-            <Select value={destino} onChange={(e) => setDestino(e.target.value as Destino)}>
-              {podeNovoProjeto && <option value="novo">➕ Novo projeto</option>}
-              {projetos.map((p) => (
-                <option key={p.id} value={p.id}>
-                  {p.nome}
-                </option>
-              ))}
-            </Select>
+            <SelectMenu
+              value={destino}
+              onChange={(v) => setDestino(v as Destino)}
+              options={[
+                ...(podeNovoProjeto ? [{ value: "novo", label: "➕ Novo projeto" }] : []),
+                ...projetos.map((p) => ({ value: p.id, label: p.nome })),
+              ]}
+            />
             {destino === "novo" && (
               <Field label="Nome do novo projeto">
                 <Input value={nomeProjeto} onChange={(e) => setNomeProjeto(e.target.value)} placeholder="Ex.: Operação 2026" />

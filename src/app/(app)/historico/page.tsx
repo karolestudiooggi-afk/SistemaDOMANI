@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useProjetos } from "@/hooks/use-projetos";
 import { PageHeader } from "@/components/page-header";
 import { ProjetoPicker } from "@/components/projeto-picker";
-import { Select } from "@/components/ui/input";
+import { SelectMenu } from "@/components/ui/select-menu";
 import { SkeletonList } from "@/components/ui/skeleton";
 import { Badge, EmptyState } from "@/components/ui/misc";
 import { descreverLog, acaoTone } from "@/lib/logs";
@@ -68,19 +68,29 @@ export default function HistoricoPage() {
       />
 
       <div className="mb-5 flex flex-wrap gap-2">
-        <Select value={filtroAcao} onChange={(e) => setFiltroAcao(e.target.value)} className="w-44">
-          <option value="__all">Todas as ações</option>
-          <option value="insert">Criações</option>
-          <option value="update">Alterações</option>
-          <option value="delete">Remoções</option>
-        </Select>
-        <Select value={filtroEntidade} onChange={(e) => setFiltroEntidade(e.target.value)} className="w-44">
-          <option value="__all">Tudo</option>
-          <option value="linha">Linhas</option>
-          <option value="coluna">Colunas</option>
-          <option value="aba">Abas</option>
-          <option value="projeto">Projetos</option>
-        </Select>
+        <SelectMenu
+          value={filtroAcao}
+          onChange={setFiltroAcao}
+          className="w-44"
+          options={[
+            { value: "__all", label: "Todas as ações" },
+            { value: "insert", label: "Criações" },
+            { value: "update", label: "Alterações" },
+            { value: "delete", label: "Remoções" },
+          ]}
+        />
+        <SelectMenu
+          value={filtroEntidade}
+          onChange={setFiltroEntidade}
+          className="w-44"
+          options={[
+            { value: "__all", label: "Tudo" },
+            { value: "linha", label: "Linhas" },
+            { value: "coluna", label: "Colunas" },
+            { value: "aba", label: "Abas" },
+            { value: "projeto", label: "Projetos" },
+          ]}
+        />
       </div>
 
       {loading ? (

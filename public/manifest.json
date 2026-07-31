@@ -1,0 +1,14 @@
+{
+  "name": "Domani — Planilhas colaborativas",
+  "short_name": "Domani",
+  "description": "Planilhas flexíveis por projeto e aba, com acessos controlados pelo administrador.",
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "background_color": "#1D1D1F",
+  "theme_color": "#1D1D1F",
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

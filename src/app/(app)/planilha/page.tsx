@@ -369,16 +369,20 @@ export default function PlanilhaPage() {
                             {i + 1}
                           </div>
                         )}
-                        {colunas.map((col) => (
-                          <div key={col.id} className="border-l border-line first:border-l-0">
-                            <Celula
-                              coluna={col}
-                              valor={linha.dados[col.nome] ?? null}
-                              editavel={canEdit}
-                              onCommit={(v) => salvarCelula(linha, col, v)}
-                            />
-                          </div>
-                        ))}
+                        {colunas.map((col) => {
+                          // Coluna "ID" é somente leitura (evita alterar a referência sem querer)
+                          const colTravada = col.nome.trim().toLowerCase() === "id";
+                          return (
+                            <div key={col.id} className="border-l border-line first:border-l-0">
+                              <Celula
+                                coluna={col}
+                                valor={linha.dados[col.nome] ?? null}
+                                editavel={canEdit && !colTravada}
+                                onCommit={(v) => salvarCelula(linha, col, v)}
+                              />
+                            </div>
+                          );
+                        })}
                         {canEdit && (
                           <div className="flex items-center justify-center gap-0.5 border-l border-line opacity-0 transition-opacity group-hover:opacity-100">
                             <button
@@ -601,15 +605,20 @@ function LinhaSheet({
       }
     >
       <div className="space-y-4">
-        {colunas.map((c) => (
-          <Field key={c.id} label={c.nome}>
-            <Input
-              type={c.tipo === "numero" ? "number" : c.tipo === "data" ? "date" : "text"}
-              value={dados[c.nome] ?? ""}
-              onChange={(e) => setDados((d) => ({ ...d, [c.nome]: e.target.value }))}
-            />
-          </Field>
-        ))}
+        {colunas.map((c) => {
+          const travada = c.nome.trim().toLowerCase() === "id";
+          return (
+            <Field key={c.id} label={travada ? `${c.nome} (não editável)` : c.nome}>
+              <Input
+                type={c.tipo === "numero" ? "number" : c.tipo === "data" ? "date" : "text"}
+                value={dados[c.nome] ?? ""}
+                onChange={(e) => setDados((d) => ({ ...d, [c.nome]: e.target.value }))}
+                disabled={travada}
+                className={travada ? "cursor-not-allowed opacity-60" : undefined}
+              />
+            </Field>
+          );
+        })}
       </div>
     </Sheet>
   );

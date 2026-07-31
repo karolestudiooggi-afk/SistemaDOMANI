@@ -4,9 +4,27 @@ export function cn(...classes: (string | false | null | undefined)[]): string {
   return classes.filter(Boolean).join(" ");
 }
 
-export function formatDate(iso: string | null): string {
-  if (!iso) return "—";
-  const d = new Date(iso);
+export function formatDate(valor: string | number | null): string {
+  if (valor == null || valor === "") return "—";
+
+  let d: Date;
+  const s = String(valor).trim();
+
+  if (/^\d{12,}$/.test(s)) {
+    // timestamp em milissegundos (ex.: vindo de importação de Excel)
+    d = new Date(Number(s));
+  } else if (/^\d{10,11}$/.test(s)) {
+    // timestamp em segundos
+    d = new Date(Number(s) * 1000);
+  } else if (/^\d{1,2}\/\d{1,2}\/\d{2,4}$/.test(s)) {
+    // já está em dd/mm/aaaa — devolve como veio
+    return s;
+  } else {
+    // ISO (yyyy-mm-dd) ou outro formato reconhecido pelo Date
+    d = new Date(s);
+  }
+
+  if (isNaN(d.getTime())) return s; // não é data válida: mostra o valor original
   return d.toLocaleDateString("pt-BR", { day: "2-digit", month: "short", year: "numeric" });
 }
 

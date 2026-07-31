@@ -47,15 +47,20 @@ function inferirTipo(valores: unknown[]): ColunaTipo {
   const amostra = valores.filter((v) => v !== null && v !== undefined && String(v).trim() !== "").slice(0, 30);
   if (amostra.length === 0) return "texto";
 
-  const todosNumero = amostra.every((v) => typeof v === "number" || (!isNaN(Number(v)) && String(v).trim() !== ""));
-  if (todosNumero) return "numero";
-
+  // 1) Datas primeiro (inclui Date do Excel, ISO, dd/mm/aaaa e timestamps grandes)
   const todosData = amostra.every((v) => {
     if (v instanceof Date) return true;
-    const s = String(v);
-    return /^\d{4}-\d{2}-\d{2}/.test(s) || /^\d{1,2}\/\d{1,2}\/\d{2,4}/.test(s);
+    const s = String(v).trim();
+    if (/^\d{4}-\d{2}-\d{2}/.test(s)) return true;        // ISO
+    if (/^\d{1,2}\/\d{1,2}\/\d{2,4}/.test(s)) return true; // dd/mm/aaaa
+    if (/^\d{12,}$/.test(s)) return true;                  // timestamp em ms (data do Excel)
+    return false;
   });
   if (todosData) return "data";
+
+  // 2) Números (só se não forem datas)
+  const todosNumero = amostra.every((v) => typeof v === "number" || (!isNaN(Number(v)) && String(v).trim() !== ""));
+  if (todosNumero) return "numero";
 
   return "texto";
 }
@@ -64,6 +69,11 @@ function normalizarData(v: unknown): string | null {
   if (v == null || v === "") return null;
   if (v instanceof Date) return v.toISOString().slice(0, 10);
   const s = String(v).trim();
+  // timestamp em milissegundos (data vinda do Excel)
+  if (/^\d{12,}$/.test(s)) {
+    const d = new Date(Number(s));
+    if (!isNaN(d.getTime())) return d.toISOString().slice(0, 10);
+  }
   const br = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})/);
   if (br) {
     const [, d, m, y] = br;

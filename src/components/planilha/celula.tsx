@@ -5,6 +5,12 @@ import type { Coluna } from "@/lib/types";
 import { cn, formatDate } from "@/lib/utils";
 import { Calendar } from "lucide-react";
 
+// Detecta valores que são timestamps em milissegundos (ex.: datas importadas do Excel)
+function pareceTimestampMs(v: string | number | null): boolean {
+  if (v == null) return false;
+  return /^\d{12,}$/.test(String(v).trim());
+}
+
 export function Celula({
   coluna,
   valor,
@@ -19,6 +25,9 @@ export function Celula({
   const [editando, setEditando] = useState(false);
   const [rascunho, setRascunho] = useState<string>(valor == null ? "" : String(valor));
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // trata como data se a coluna é data OU se o valor é claramente um timestamp
+  const ehData = coluna.tipo === "data" || pareceTimestampMs(valor);
 
   useEffect(() => {
     setRascunho(valor == null ? "" : String(valor));
@@ -41,7 +50,7 @@ export function Celula({
   if (!editavel) {
     return (
       <div className="px-3.5 py-2.5 text-sm text-content">
-        {coluna.tipo === "data" ? formatDate(valor as string) : valor ?? <span className="text-content-mute">—</span>}
+        {ehData ? formatDate(valor) : valor ?? <span className="text-content-mute">—</span>}
       </div>
     );
   }
@@ -74,12 +83,12 @@ export function Celula({
         valor == null ? "text-content-mute" : "text-content"
       )}
     >
-      {coluna.tipo === "data" && valor && <Calendar className="h-3 w-3 text-content-mute" />}
+      {ehData && valor && <Calendar className="h-3 w-3 text-content-mute" />}
       <span className="truncate">
         {valor == null
           ? "—"
-          : coluna.tipo === "data"
-          ? formatDate(valor as string)
+          : ehData
+          ? formatDate(valor)
           : String(valor)}
       </span>
     </button>

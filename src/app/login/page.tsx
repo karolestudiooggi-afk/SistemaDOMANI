@@ -1,18 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input, Field } from "@/components/ui/input";
 import { useToast } from "@/components/ui/toast";
 import { LogoVertical } from "@/components/logo";
 import { Mail, Lock, ArrowRight, ArrowLeft } from "lucide-react";
+import { useWsRouter } from "@/components/ui/ws-link";
 
 type Modo = "login" | "esqueci";
 
 export default function LoginPage() {
-  const router = useRouter();
+  const router = useWsRouter();
   const toast = useToast();
   const supabase = createClient();
 

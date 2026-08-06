@@ -1,7 +1,6 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { usePerfil } from "@/hooks/use-perfil";
@@ -21,6 +20,7 @@ import {
   Menu,
   X,
 } from "lucide-react";
+import { WsLink, useWsRouter } from "@/components/ui/ws-link";
 
 const nav = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -34,7 +34,7 @@ const nav = [
 
 export function Sidebar() {
   const pathname = usePathname();
-  const router = useRouter();
+  const router = useWsRouter();
   const { perfil, isSuperAdmin } = usePerfil();
   const [open, setOpen] = useState(false);
 
@@ -58,7 +58,7 @@ export function Sidebar() {
           const active = pathname.startsWith(item.href);
           const Icon = item.icon;
           return (
-            <Link
+            <WsLink
               key={item.href}
               href={item.href}
               onClick={() => setOpen(false)}
@@ -71,7 +71,7 @@ export function Sidebar() {
             >
               <Icon className={cn("h-[18px] w-[18px] transition-transform", active && "scale-110")} />
               {item.label}
-            </Link>
+            </WsLink>
           );
         })}
       </nav>

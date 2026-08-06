@@ -1,16 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input, Field } from "@/components/ui/input";
 import { useToast } from "@/components/ui/toast";
 import { LogoVertical } from "@/components/logo";
 import { Lock, Check } from "lucide-react";
+import { useWsRouter } from "@/components/ui/ws-link";
 
 export default function RedefinirSenhaPage() {
-  const router = useRouter();
+  const router = useWsRouter();
   const toast = useToast();
   const supabase = createClient();
 

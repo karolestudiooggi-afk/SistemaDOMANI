@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { usePerfil } from "@/hooks/use-perfil";
 import { useToast } from "@/components/ui/toast";
@@ -26,6 +25,7 @@ import {
   Database,
   RefreshCw,
 } from "lucide-react";
+import { useWsRouter } from "@/components/ui/ws-link";
 
 type Tab = "perfil" | "preferencias" | "integracoes";
 
@@ -77,7 +77,7 @@ function PerfilTab() {
   const supabase = createClient();
   const toast = useToast();
   const { perfil } = usePerfil();
-  const router = useRouter();
+  const router = useWsRouter();
   const fileRef = useRef<HTMLInputElement>(null);
 
   const [nome, setNome] = useState("");
